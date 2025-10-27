@@ -1,0 +1,145 @@
+// SCSS Mixins for Sun Tracking App
+
+// Responsive breakpoints
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == sm {
+    @media (min-width: $breakpoint-sm) {
+      @content;
+    }
+  }
+  @if $breakpoint == md {
+    @media (min-width: $breakpoint-md) {
+      @content;
+    }
+  }
+  @if $breakpoint == lg {
+    @media (min-width: $breakpoint-lg) {
+      @content;
+    }
+  }
+  @if $breakpoint == xl {
+    @media (min-width: $breakpoint-xl) {
+      @content;
+    }
+  }
+}
+
+// Flexbox utilities
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Button styles
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+  font-size: $font-size-base;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all $transition-fast;
+  cursor: pointer;
+  border: none;
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  background-color: $primary-color;
+  color: white;
+  
+  &:hover:not(:disabled) {
+    background-color: darken($primary-color, 10%);
+  }
+}
+
+@mixin button-secondary {
+  @include button-base;
+  background-color: transparent;
+  color: $primary-color;
+  border: 1px solid $primary-color;
+  
+  &:hover:not(:disabled) {
+    background-color: $primary-color;
+    color: white;
+  }
+}
+
+// Card styles
+@mixin card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: 0 2px 4px var(--shadow);
+}
+
+// Input styles
+@mixin input-base {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid var(--border);
+  border-radius: $radius-md;
+  font-size: $font-size-base;
+  background: var(--background);
+  color: var(--foreground);
+  transition: border-color $transition-fast;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+  }
+  
+  &::placeholder {
+    color: var(--text-muted);
+  }
+}
+
+// Loading spinner
+@mixin loading-spinner($size: 20px) {
+  width: $size;
+  height: $size;
+  border: 2px solid var(--border);
+  border-top: 2px solid $primary-color;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+// Truncate text
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Screen reader only
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

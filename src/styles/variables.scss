@@ -1,0 +1,64 @@
+// SCSS Variables for Sun Tracking App
+
+// Colors
+$primary-color: #ff6b35;
+$secondary-color: #f7931e;
+$background-light: #ffffff;
+$foreground-light: #171717;
+$surface-light: #f8f9fa;
+$border-light: #e9ecef;
+$shadow-light: rgba(0, 0, 0, 0.1);
+$text-muted-light: #6c757d;
+
+$background-dark: #0a0a0a;
+$foreground-dark: #ededed;
+$surface-dark: #1a1a1a;
+$border-dark: #333333;
+$shadow-dark: rgba(255, 255, 255, 0.1);
+$text-muted-dark: #a0a0a0;
+
+$success: #28a745;
+$warning: #ffc107;
+$error: #dc3545;
+
+// Spacing
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-xxl: 3rem;
+
+// Border radius
+$radius-sm: 0.25rem;
+$radius-md: 0.5rem;
+$radius-lg: 1rem;
+
+// Typography
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size-base: 1rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.25rem;
+$font-size-2xl: 1.5rem;
+$font-size-3xl: 2rem;
+
+// Breakpoints
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+
+// Z-index layers
+$z-dropdown: 1000;
+$z-sticky: 1020;
+$z-fixed: 1030;
+$z-modal-backdrop: 1040;
+$z-modal: 1050;
+$z-popover: 1060;
+$z-tooltip: 1070;
+
+// Transitions
+$transition-fast: 0.15s ease-in-out;
+$transition-base: 0.3s ease-in-out;
+$transition-slow: 0.5s ease-in-out;
