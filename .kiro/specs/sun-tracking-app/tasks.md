@@ -26,7 +26,7 @@
   - Add support for manual timezone selection
   - _Requirements: 1.5, 2.5_
 
-- [ ] 2.4 Create unit tests for sun calculations
+- [x] 2.4 Create unit tests for sun calculations
   - Test accuracy against NOAA reference data for various locations
   - Add edge case tests for polar regions and extreme dates
   - Validate DST transition handling

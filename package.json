@@ -4,7 +4,16 @@
   "private": true,
   "type": "module",
   "description": "A comprehensive solar position calculator and visualization tool for photographers, filmmakers, and outdoor enthusiasts",
-  "keywords": ["sun", "solar", "tracking", "photography", "golden hour", "compass", "mapbox", "pwa"],
+  "keywords": [
+    "sun",
+    "solar",
+    "tracking",
+    "photography",
+    "golden hour",
+    "compass",
+    "mapbox",
+    "pwa"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,7 +21,10 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "type-check": "tsc --noEmit",
-    "analyze": "ANALYZE=true npm run build"
+    "analyze": "ANALYZE=true npm run build",
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1",
@@ -24,9 +36,11 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@vitest/ui": "^4.0.4",
     "eslint": "^9",
     "eslint-config-next": "16.0.0",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4",
+    "vitest": "^4.0.4"
   },
   "engines": {
     "node": ">=18.0.0",
