@@ -34,3 +34,23 @@ export {
   getTimezoneInfo,
   convertSunTimesToTimezone
 } from './timezone-handler.js';
+
+// Geolocation Service exports
+export {
+  getCurrentPosition,
+  watchPosition,
+  clearWatch,
+  validateManualLocation,
+  getLocationWithFallback,
+  checkGeolocationPermission,
+  requestGeolocationPermission,
+  getAccuracyLevel,
+  formatLocationForDisplay,
+  calculateDistance,
+  hasLocationChanged,
+  getCachedLocation,
+  cacheLocation,
+  clearCachedLocation,
+  GeolocationError,
+  GEOLOCATION_ERRORS
+} from './geolocation-service.js';
