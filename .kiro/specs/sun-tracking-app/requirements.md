@@ -14,6 +14,9 @@ The Sun Tracking Web Application is a comprehensive solar position calculator an
 - **Location_Manager**: The service handling geolocation, saved locations, and coordinate validation
 - **Shadow_Calculator**: The component calculating shadow lengths and directions
 - **Time_Scrubber**: The interactive time control allowing users to scrub through different times
+- **3D_Renderer**: The WebGL-based 3D visualization engine for human model and lighting effects
+- **Lighting_Engine**: The component that calculates and applies realistic lighting based on sun position
+- **Prediction_Service**: The service that generates future sun position and lighting predictions
 
 ## Requirements
 
@@ -112,3 +115,27 @@ The Sun Tracking Web Application is a comprehensive solar position calculator an
 3. THE Sun_Tracker_System SHALL support both metric and imperial units for measurements
 4. THE Sun_Tracker_System SHALL update shadow calculations when time or location changes
 5. THE Sun_Tracker_System SHALL show shadow length and direction on the map visualization
+
+### Requirement 9
+
+**User Story:** As a photographer, I want to see a 3D visualization of how sunlight affects a human figure, so that I can understand lighting conditions and shadow patterns in an interactive way.
+
+#### Acceptance Criteria
+
+1. THE Sun_Tracker_System SHALL render a 3D human model using WebGL technology
+2. THE Sun_Tracker_System SHALL apply realistic lighting effects based on current sun position and intensity
+3. THE Sun_Tracker_System SHALL cast accurate shadows from the human model based on sun elevation and azimuth
+4. THE Sun_Tracker_System SHALL update the 3D lighting in real-time when time or location changes
+5. THE Sun_Tracker_System SHALL allow users to rotate and zoom the 3D view for different perspectives
+
+### Requirement 10
+
+**User Story:** As a filmmaker, I want to see future sun predictions with 3D visualization, so that I can plan shoots days or weeks in advance with accurate lighting previews.
+
+#### Acceptance Criteria
+
+1. THE Sun_Tracker_System SHALL generate sun position predictions for future dates up to one year ahead
+2. THE Sun_Tracker_System SHALL display future sun paths and lighting conditions in the 3D visualization
+3. THE Sun_Tracker_System SHALL allow users to scrub through future time periods to preview lighting changes
+4. THE Sun_Tracker_System SHALL calculate and display seasonal lighting variations in the 3D model
+5. THE Sun_Tracker_System SHALL provide comparison views between current and future lighting conditions

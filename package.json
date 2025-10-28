@@ -2,6 +2,7 @@
   "name": "sun-tracking-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "A comprehensive solar position calculator and visualization tool for photographers, filmmakers, and outdoor enthusiasts",
   "keywords": ["sun", "solar", "tracking", "photography", "golden hour", "compass", "mapbox", "pwa"],
   "scripts": {
