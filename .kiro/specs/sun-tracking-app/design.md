@@ -23,6 +23,9 @@ graph TB
         LM[Location Manager]
         NM[Notification Manager]
         SM[Shadow Calculator]
+        3DR[3D Renderer]
+        LE[Lighting Engine]
+        PS[Prediction Service]
     end
     
     subgraph "External Services"
@@ -36,6 +39,9 @@ graph TB
     UI --> LM
     UI --> NM
     UI --> SM
+    UI --> 3DR
+    UI --> LE
+    UI --> PS
     UI --> MB
     
     LM --> SB
@@ -58,6 +64,9 @@ graph TB
 - **Notifications**: Web Push API with Service Worker
 - **PWA**: Service Worker for offline functionality
 - **Calculations**: Custom JavaScript implementation of NOAA algorithms
+- **3D Graphics**: Three.js for WebGL-based 3D rendering and lighting
+- **3D Models**: GLTF/GLB format for human model assets
+- **Lighting**: Physically-based rendering (PBR) for realistic sun lighting effects
 
 ## Components and Interfaces
 
@@ -102,6 +111,40 @@ interface ShadowCalculator {
 }
 ```
 
+#### 3D Renderer (`/src/lib/3d-renderer.js`)
+```javascript
+interface 3DRenderer {
+  initializeScene(container: HTMLElement): void
+  loadHumanModel(modelPath: string): Promise<void>
+  updateSunPosition(azimuth: number, elevation: number): void
+  updateLighting(sunIntensity: number, ambientLevel: number): void
+  renderFrame(): void
+  setCamera(position: Vector3, target: Vector3): void
+  dispose(): void
+}
+```
+
+#### Lighting Engine (`/src/lib/lighting-engine.js`)
+```javascript
+interface LightingEngine {
+  calculateSunIntensity(elevation: number, atmosphericConditions?: object): number
+  createDirectionalLight(azimuth: number, elevation: number, intensity: number): DirectionalLight
+  updateShadows(sunPosition: object, sceneObjects: Array): void
+  calculateAmbientLight(timeOfDay: Date, weather?: string): number
+  applyAtmosphericScattering(sunPosition: object): Color
+}
+```
+
+#### Prediction Service (`/src/lib/prediction-service.js`)
+```javascript
+interface PredictionService {
+  generateFutureSunData(latitude: number, longitude: number, startDate: Date, endDate: Date): Promise<Array<SunData>>
+  predictSeasonalChanges(latitude: number, longitude: number, year: number): SeasonalData
+  calculateLightingTrends(location: object, timeRange: object): Array<LightingTrend>
+  compareLightingConditions(date1: Date, date2: Date, location: object): ComparisonData
+}
+```
+
 ### Location Management
 
 #### Location Manager (`/src/lib/location-manager.js`)
@@ -132,6 +175,8 @@ interface SavedLocation {
 ├── page.js                   # Home screen with sun summary
 ├── map/page.js              # Interactive map view
 ├── compass/page.js          # Compass overlay view
+├── 3d-view/page.js          # 3D visualization with human model
+├── predictions/page.js      # Future sun predictions view
 ├── locations/page.js        # Saved locations management
 ├── settings/page.js         # App settings and preferences
 └── components/
@@ -139,6 +184,9 @@ interface SavedLocation {
     ├── TimeScrubber.js      # Interactive time control
     ├── MapView.js           # Mapbox integration
     ├── CompassOverlay.js    # Device orientation compass
+    ├── 3DVisualization.js   # Three.js 3D scene component
+    ├── HumanModel.js        # 3D human model with lighting
+    ├── PredictionTimeline.js # Future sun predictions interface
     ├── NotificationSettings.js
     └── ShadowCalculator.js
 ```
@@ -164,6 +212,29 @@ interface MapViewProps {
   currentSunPosition: {azimuth: number, elevation: number}
   onLocationSelect: (coordinates) => void
   selectedTime: Date
+}
+```
+
+**3DVisualization Component**
+```javascript
+interface 3DVisualizationProps {
+  sunPosition: {azimuth: number, elevation: number}
+  sunIntensity: number
+  selectedTime: Date
+  onTimeChange: (newTime: Date) => void
+  showPredictions: boolean
+  predictionData?: Array<FutureSunData>
+}
+```
+
+**PredictionTimeline Component**
+```javascript
+interface PredictionTimelineProps {
+  currentDate: Date
+  predictionRange: {start: Date, end: Date}
+  onDateSelect: (date: Date) => void
+  lightingData: Array<LightingTrend>
+  comparisonMode: boolean
 }
 ```
 

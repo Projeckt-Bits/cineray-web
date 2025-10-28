@@ -7,26 +7,26 @@
   - Configure development environment and build scripts
   - _Requirements: All requirements depend on proper project setup_
 
-- [ ] 2. Implement sun calculation engine
-- [ ] 2.1 Create sun position calculation module
+- [x] 2. Implement sun calculation engine
+- [x] 2.1 Create sun position calculation module
   - Implement NOAA Solar Position Algorithm for azimuth and elevation calculations
   - Add functions for sunrise, sunset, and solar noon calculations
   - Create utility functions for coordinate validation and date handling
   - _Requirements: 1.1, 1.2, 2.1, 2.2, 2.5_
 
-- [ ] 2.2 Implement sun times calculation service
+- [x] 2.2 Implement sun times calculation service
   - Add golden hour and blue hour timing calculations
   - Implement twilight period calculations (civil, nautical, astronomical)
   - Create sun path generation for full day trajectory
   - _Requirements: 1.3, 1.4, 3.2, 4.2_
 
-- [ ] 2.3 Add timezone and DST handling
+- [x] 2.3 Add timezone and DST handling
   - Integrate timezone lookup service for coordinates
   - Implement DST-aware time conversions
   - Add support for manual timezone selection
   - _Requirements: 1.5, 2.5_
 
-- [ ]* 2.4 Create unit tests for sun calculations
+- [x] 2.4 Create unit tests for sun calculations
   - Test accuracy against NOAA reference data for various locations
   - Add edge case tests for polar regions and extreme dates
   - Validate DST transition handling
@@ -51,7 +51,7 @@
   - Add offline caching with localStorage
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-- [ ]* 3.4 Add location service tests
+- [ ] 3.4 Add location service tests
   - Test browser geolocation API and fallback mechanisms
   - Validate Supabase location storage and retrieval operations
   - Test coordinate validation and offline caching
@@ -169,22 +169,72 @@
   - Add loading states and smooth animations
   - _Requirements: Performance aspects of all requirements_
 
-- [ ]* 10.3 End-to-end testing and validation
+- [ ] 10.3 End-to-end testing and validation
   - Create integration tests for complete user workflows
   - Test app functionality across different devices and OS versions
   - Validate sun calculation accuracy with field testing
   - _Requirements: All requirements validation_
 
-- [ ] 11. Final integration and deployment preparation
-- [ ] 11.1 Complete web app integration
-  - Connect all features and ensure seamless responsive user experience
+- [ ] 11. Implement 3D visualization with human model
+- [ ] 11.1 Set up Three.js and 3D rendering engine
+  - Install and configure Three.js for WebGL rendering
+  - Create 3D scene setup with camera, renderer, and controls
+  - Implement responsive 3D viewport with touch/mouse controls
+  - _Requirements: 9.1, 9.5_
+
+- [ ] 11.2 Create and integrate human 3D model
+  - Source or create realistic human 3D model in GLTF format
+  - Implement model loading and positioning in 3D scene
+  - Add model animation capabilities for different poses
+  - _Requirements: 9.1, 9.2_
+
+- [ ] 11.3 Implement realistic sun lighting system
+  - Create directional light source based on sun position calculations
+  - Implement physically-based rendering (PBR) materials for realistic lighting
+  - Add dynamic shadow casting from human model based on sun elevation
+  - _Requirements: 9.2, 9.3, 9.4_
+
+- [ ] 11.4 Connect 3D visualization with sun calculations
+  - Integrate 3D lighting with existing sun position calculations
+  - Update 3D scene lighting in real-time when time scrubber changes
+  - Synchronize 3D view with map and compass components
+  - _Requirements: 9.4, 9.5_
+
+- [ ] 12. Build future sun prediction system
+- [ ] 12.1 Implement prediction calculation engine
+  - Create service to calculate sun positions for future dates
+  - Generate sun path predictions up to one year in advance
+  - Implement seasonal variation calculations and trends
+  - _Requirements: 10.1, 10.4_
+
+- [ ] 12.2 Create prediction timeline interface
+  - Build interactive timeline for selecting future dates
+  - Add comparison view between current and future lighting
+  - Implement prediction data visualization and charts
+  - _Requirements: 10.2, 10.3, 10.5_
+
+- [ ] 12.3 Integrate predictions with 3D visualization
+  - Display future lighting conditions in 3D human model
+  - Add animation between current and predicted lighting states
+  - Create side-by-side comparison mode for different dates
+  - _Requirements: 10.2, 10.3, 10.5_
+
+- [ ] 12.4 Add prediction accuracy validation
+  - Test prediction accuracy against historical sun data
+  - Implement confidence intervals for long-term predictions
+  - Add weather integration for more accurate lighting predictions
+  - _Requirements: 10.1, 10.4_
+
+- [ ] 13. Final integration and deployment preparation
+- [ ] 13.1 Complete web app integration
+  - Connect all features including 3D visualization and predictions
   - Implement final UI polish and web accessibility improvements
   - Add PWA icons, manifest, and meta tags for social sharing
   - _Requirements: Complete user experience across all requirements_
 
-- [ ] 11.2 Prepare for web deployment
+- [ ] 13.2 Prepare for web deployment
   - Configure Next.js 15 build settings and environment variables
-  - Set up Vercel/Netlify deployment pipeline
+  - Set up Vercel/Netlify deployment pipeline with 3D asset optimization
   - Configure Supabase production environment
   - Create deployment documentation and release notes
   - _Requirements: Deployment readiness for all implemented features_
