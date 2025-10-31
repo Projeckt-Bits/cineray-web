@@ -178,19 +178,71 @@ describe('Geolocation Service', () => {
       expect(result.longitude).toBe(-74.0060)
     })
 
+    it('should validate boundary coordinates', () => {
+      // Test exact boundaries
+      expect(() => validateManualLocation(90, 180)).not.toThrow()
+      expect(() => validateManualLocation(-90, -180)).not.toThrow()
+      expect(() => validateManualLocation(0, 0)).not.toThrow()
+    })
+
     it('should throw error for invalid latitude', () => {
       expect(() => validateManualLocation(100, -74.0060))
+        .toThrow('Invalid coordinates: latitude must be between -90 and 90')
+      
+      expect(() => validateManualLocation(-100, -74.0060))
         .toThrow('Invalid coordinates: latitude must be between -90 and 90')
     })
 
     it('should throw error for invalid longitude', () => {
       expect(() => validateManualLocation(40.7128, 200))
         .toThrow('Invalid coordinates: latitude must be between -90 and 90, longitude must be between -180 and 180')
+      
+      expect(() => validateManualLocation(40.7128, -200))
+        .toThrow('Invalid coordinates: latitude must be between -90 and 90, longitude must be between -180 and 180')
     })
 
     it('should throw error for NaN values', () => {
       expect(() => validateManualLocation('invalid', -74.0060))
         .toThrow('Invalid coordinates: latitude and longitude must be valid numbers')
+      
+      expect(() => validateManualLocation(40.7128, 'invalid'))
+        .toThrow('Invalid coordinates: latitude and longitude must be valid numbers')
+      
+      expect(() => validateManualLocation(NaN, -74.0060))
+        .toThrow('Invalid coordinates: latitude and longitude must be valid numbers')
+      
+      expect(() => validateManualLocation(40.7128, NaN))
+        .toThrow('Invalid coordinates: latitude and longitude must be valid numbers')
+    })
+
+    it('should handle null and undefined values', () => {
+      expect(() => validateManualLocation(null, -74.0060))
+        .toThrow('Invalid coordinates: latitude and longitude must be valid numbers')
+      
+      expect(() => validateManualLocation(40.7128, undefined))
+        .toThrow('Invalid coordinates: latitude and longitude must be valid numbers')
+    })
+
+    it('should handle empty string values', () => {
+      expect(() => validateManualLocation('', -74.0060))
+        .toThrow('Invalid coordinates: latitude and longitude must be valid numbers')
+      
+      expect(() => validateManualLocation(40.7128, ''))
+        .toThrow('Invalid coordinates: latitude and longitude must be valid numbers')
+    })
+
+    it('should handle scientific notation', () => {
+      const result = validateManualLocation('4.07128e1', '-7.40060e1')
+      
+      expect(result.latitude).toBe(40.7128)
+      expect(result.longitude).toBe(-74.0060)
+    })
+
+    it('should handle decimal precision', () => {
+      const result = validateManualLocation(40.712812345, -74.006015678)
+      
+      expect(result.latitude).toBe(40.712812345)
+      expect(result.longitude).toBe(-74.006015678)
     })
   })
 
@@ -452,6 +504,68 @@ describe('Geolocation Service', () => {
       
       // Should not throw
       expect(() => cacheLocation(location)).not.toThrow()
+    })
+
+    it('should handle localStorage getItem errors gracefully', () => {
+      mockLocalStorage.getItem.mockImplementation(() => {
+        throw new Error('Storage read error')
+      })
+
+      const result = getCachedLocation()
+      expect(result).toBeNull()
+    })
+
+    it('should handle localStorage removeItem errors gracefully', () => {
+      mockLocalStorage.removeItem.mockImplementation(() => {
+        throw new Error('Storage remove error')
+      })
+
+      // Should not throw
+      expect(() => clearCachedLocation()).not.toThrow()
+    })
+
+    it('should cache location with all required fields', () => {
+      const location = {
+        latitude: 40.7128,
+        longitude: -74.0060,
+        accuracy: 50,
+        accuracyLevel: 'high',
+        timestamp: Date.now(),
+        source: 'browser_geolocation'
+      }
+
+      cacheLocation(location)
+
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+        'sun_tracker_last_location',
+        JSON.stringify(location)
+      )
+    })
+
+    it('should validate cached location coordinates', () => {
+      const invalidLocation = {
+        latitude: 200, // Invalid
+        longitude: -74.0060,
+        timestamp: Date.now()
+      }
+
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(invalidLocation))
+
+      const result = getCachedLocation()
+      expect(result).toBeNull()
+    })
+
+    it('should handle missing timestamp in cached location', () => {
+      const locationWithoutTimestamp = {
+        latitude: 40.7128,
+        longitude: -74.0060
+        // Missing timestamp
+      }
+
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(locationWithoutTimestamp))
+
+      const result = getCachedLocation()
+      expect(result).toBeNull()
     })
   })
 })

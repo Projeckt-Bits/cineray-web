@@ -391,6 +391,17 @@ export const getCachedLocation = () => {
     const cached = localStorage.getItem('sun_tracker_last_location')
     if (cached) {
       const location = JSON.parse(cached)
+      
+      // Validate required fields
+      if (!location.timestamp || !location.latitude || !location.longitude) {
+        return null
+      }
+      
+      // Validate coordinates
+      if (!validateCoordinates(location.latitude, location.longitude)) {
+        return null
+      }
+      
       // Check if cache is not too old (1 hour)
       if (Date.now() - location.timestamp < 3600000) {
         return location

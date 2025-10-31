@@ -289,5 +289,179 @@ describe('SavedLocationsManager', () => {
 
       expect(hasPending).toBe(true)
     })
+
+    it('should return false when no pending changes', () => {
+      localStorageMock.getItem.mockReturnValue(JSON.stringify([mockLocation]))
+
+      const hasPending = savedLocationsManager.hasPendingChanges()
+
+      expect(hasPending).toBe(false)
+    })
+
+    it('should handle offline status correctly', () => {
+      global.navigator.onLine = false
+      localStorageMock.getItem.mockReturnValue(JSON.stringify([
+        { ...mockLocation, _pending: true }
+      ]))
+
+      const status = savedLocationsManager.getSyncStatus()
+
+      expect(status.isOnline).toBe(false)
+      expect(status.hasPendingChanges).toBe(true)
+    })
+  })
+
+  describe('network connectivity', () => {
+    it('should handle network errors gracefully during sync', async () => {
+      const { getCurrentUser } = await import('../supabase.js')
+      const { savedLocationsService } = await import('../database-service.js')
+      
+      getCurrentUser.mockResolvedValue(mockUser)
+      savedLocationsService.getAll.mockRejectedValue(new Error('Network timeout'))
+      localStorageMock.getItem.mockReturnValue(JSON.stringify([mockLocation]))
+
+      const result = await savedLocationsManager.getAll()
+
+      expect(result).toEqual([mockLocation])
+    })
+
+    it('should queue operations when offline', async () => {
+      const { getCurrentUser } = await import('../supabase.js')
+      
+      getCurrentUser.mockResolvedValue(mockUser)
+      global.navigator.onLine = false
+      localStorageMock.getItem.mockReturnValue('[]')
+
+      const result = await savedLocationsManager.create('Offline Location', 40.7128, -74.0060)
+
+      expect(result._pending).toBe(true)
+      expect(result.id).toMatch(/^temp_/)
+    })
+
+    it('should handle sync with server when coming back online', async () => {
+      const { getCurrentUser } = await import('../supabase.js')
+      const { savedLocationsService } = await import('../database-service.js')
+      
+      getCurrentUser.mockResolvedValue(mockUser)
+      savedLocationsService.getAll.mockResolvedValue([mockLocation])
+      savedLocationsService.create.mockResolvedValue(mockLocation)
+      
+      // Set up pending location
+      const pendingLocation = {
+        ...mockLocation,
+        id: 'temp_123',
+        _pending: true
+      }
+      localStorageMock.getItem.mockReturnValue(JSON.stringify([pendingLocation]))
+
+      await savedLocationsManager.syncWithServer()
+
+      expect(savedLocationsService.create).toHaveBeenCalled()
+      expect(savedLocationsService.getAll).toHaveBeenCalled()
+    })
+
+    it('should handle partial sync failures', async () => {
+      const { getCurrentUser } = await import('../supabase.js')
+      const { savedLocationsService } = await import('../database-service.js')
+      
+      getCurrentUser.mockResolvedValue(mockUser)
+      savedLocationsService.create.mockRejectedValue(new Error('Sync failed'))
+      savedLocationsService.getAll.mockResolvedValue([])
+      
+      const pendingLocation = {
+        ...mockLocation,
+        id: 'temp_123',
+        _pending: true
+      }
+      localStorageMock.getItem.mockReturnValue(JSON.stringify([pendingLocation]))
+
+      // Should not throw even if individual sync fails
+      await expect(savedLocationsManager.syncWithServer()).resolves.toBeUndefined()
+    })
+
+    it('should handle deleted items during sync', async () => {
+      const { getCurrentUser } = await import('../supabase.js')
+      const { savedLocationsService } = await import('../database-service.js')
+      
+      getCurrentUser.mockResolvedValue(mockUser)
+      savedLocationsService.delete.mockResolvedValue()
+      savedLocationsService.getAll.mockResolvedValue([])
+      
+      const deletedLocation = {
+        ...mockLocation,
+        _deleted: true,
+        _pending: true
+      }
+      localStorageMock.getItem.mockReturnValue(JSON.stringify([deletedLocation]))
+
+      await savedLocationsManager.syncWithServer()
+
+      expect(savedLocationsService.delete).toHaveBeenCalledWith(mockLocation.id)
+    })
+  })
+
+  describe('coordinate validation in manager', () => {
+    it('should validate coordinates during create', async () => {
+      const { getCurrentUser } = await import('../supabase.js')
+      
+      getCurrentUser.mockResolvedValue(mockUser)
+
+      // Test various invalid coordinate combinations
+      await expect(
+        savedLocationsManager.create('Test', 90.1, 0)
+      ).rejects.toThrow('Latitude must be between -90 and 90 degrees')
+
+      await expect(
+        savedLocationsManager.create('Test', -90.1, 0)
+      ).rejects.toThrow('Latitude must be between -90 and 90 degrees')
+
+      await expect(
+        savedLocationsManager.create('Test', 0, 180.1)
+      ).rejects.toThrow('Longitude must be between -180 and 180 degrees')
+
+      await expect(
+        savedLocationsManager.create('Test', 0, -180.1)
+      ).rejects.toThrow('Longitude must be between -180 and 180 degrees')
+    })
+
+    it('should validate coordinates during update', async () => {
+      const { getCurrentUser } = await import('../supabase.js')
+      
+      getCurrentUser.mockResolvedValue(mockUser)
+      localStorageMock.getItem.mockReturnValue(JSON.stringify([mockLocation]))
+
+      await expect(
+        savedLocationsManager.update('loc-123', { latitude: 91 })
+      ).rejects.toThrow('Latitude must be between -90 and 90 degrees')
+
+      await expect(
+        savedLocationsManager.update('loc-123', { longitude: 181 })
+      ).rejects.toThrow('Longitude must be between -180 and 180 degrees')
+    })
+
+    it('should accept valid boundary coordinates', async () => {
+      const { getCurrentUser } = await import('../supabase.js')
+      const { savedLocationsService } = await import('../database-service.js')
+      
+      getCurrentUser.mockResolvedValue(mockUser)
+      savedLocationsService.create.mockResolvedValue(mockLocation)
+
+      // Should not throw for valid boundary values
+      await expect(
+        savedLocationsManager.create('North Pole', 90, 0)
+      ).resolves.toBeDefined()
+
+      await expect(
+        savedLocationsManager.create('South Pole', -90, 0)
+      ).resolves.toBeDefined()
+
+      await expect(
+        savedLocationsManager.create('Date Line East', 0, 180)
+      ).resolves.toBeDefined()
+
+      await expect(
+        savedLocationsManager.create('Date Line West', 0, -180)
+      ).resolves.toBeDefined()
+    })
   })
 })
