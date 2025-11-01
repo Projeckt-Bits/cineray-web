@@ -45,13 +45,13 @@
   - Implement location accuracy validation and fallbacks
   - _Requirements: 3.4, 3.5_
 
-- [ ] 3.3 Create saved locations management
+- [x] 3.3 Create saved locations management
   - Build location storage system with Supabase
   - Implement CRUD operations for saved locations
   - Add offline caching with localStorage
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-- [ ] 3.4 Add location service tests
+- [x] 3.4 Add location service tests
   - Test browser geolocation API and fallback mechanisms
   - Validate Supabase location storage and retrieval operations
   - Test coordinate validation and offline caching
